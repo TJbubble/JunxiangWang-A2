@@ -1,14 +1,18 @@
 package org.example;
 
-import java.util.ArrayList;
+import java.util.Queue;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.ArrayList;
+import org.example.Visitor; // Add this import
+import org.example.Employee; // Add this import
 
 public class Ride implements RideInterface {
     private String rideName;
     private int capacity;
     private Employee operator; // Employee who operates the ride
     private boolean isOpen;
-    private List<Visitor> queue; // Queue of visitors waiting for the ride
+    private Queue<Visitor> queue; // Queue of visitors waiting for the ride
     private List<Visitor> history; // History of visitors who have taken the ride
     
     public Ride() {
@@ -16,7 +20,7 @@ public class Ride implements RideInterface {
         this.capacity = 0;
         this.operator = null;
         this.isOpen = false;
-        this.queue = new ArrayList<>();
+        this.queue = new LinkedList<>();
         this.history = new ArrayList<>();
     }
     
@@ -25,7 +29,7 @@ public class Ride implements RideInterface {
         this.capacity = capacity;
         this.operator = operator;
         this.isOpen = (operator != null); // Ride is open if there's an operator
-        this.queue = new ArrayList<>();
+        this.queue = new LinkedList<>();
         this.history = new ArrayList<>();
     }
     
@@ -64,7 +68,7 @@ public class Ride implements RideInterface {
         this.isOpen = open;
     }
     
-    public List<Visitor> getQueue() {
+    public Queue<Visitor> getQueue() {
         return queue;
     }
     
@@ -77,13 +81,18 @@ public class Ride implements RideInterface {
     public void addVisitorToQueue(Visitor visitor) {
         if (visitor != null) {
             queue.add(visitor);
+            System.out.println("Visitor " + visitor.getName() + " added to the queue for " + rideName);
+        } else {
+            System.out.println("Failed to add visitor to queue: visitor is null");
         }
     }
     
     @Override
     public void removeVisitorFromQueue(Visitor visitor) {
-        if (visitor != null) {
-            queue.remove(visitor);
+        if (visitor != null && queue.remove(visitor)) {
+            System.out.println("Visitor " + visitor.getName() + " removed from the queue for " + rideName);
+        } else {
+            System.out.println("Failed to remove visitor from queue: visitor not found or is null");
         }
     }
     
@@ -93,8 +102,10 @@ public class Ride implements RideInterface {
         if (queue.isEmpty()) {
             System.out.println("  No visitors in queue");
         } else {
-            for (int i = 0; i < queue.size(); i++) {
-                System.out.println("  " + (i + 1) + ". " + queue.get(i).getName());
+            // Convert queue to list to maintain order for printing
+            List<Visitor> queueList = new ArrayList<>(queue);
+            for (int i = 0; i < queueList.size(); i++) {
+                System.out.println("  " + (i + 1) + ". " + queueList.get(i).getName());
             }
         }
     }
@@ -140,9 +151,10 @@ public class Ride implements RideInterface {
             
             // Move visitors from queue to history
             for (int i = 0; i < visitorsToTake; i++) {
-                Visitor visitor = queue.get(0);
-                addVisitorToHistory(visitor);
-                queue.remove(0);
+                Visitor visitor = queue.poll(); // FIFO - remove from front of queue
+                if (visitor != null) {
+                    addVisitorToHistory(visitor);
+                }
             }
         } else {
             System.out.println("No visitors in queue to take on the ride");

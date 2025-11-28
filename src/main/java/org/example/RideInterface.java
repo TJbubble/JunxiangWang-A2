@@ -1,5 +1,7 @@
 package org.example;
 
+import org.example.Visitor;
+
 public interface RideInterface {
     // Part 3 methods
     void addVisitorToQueue(Visitor visitor);
