@@ -2,10 +2,9 @@ package org.example;
 
 import java.util.Queue;
 import java.util.LinkedList;
-import java.util.List;
-import java.util.ArrayList;
-import org.example.Visitor; // Add this import
-import org.example.Employee; // Add this import
+import java.util.Iterator;
+import org.example.Visitor;
+import org.example.Employee;
 
 public class Ride implements RideInterface {
     private String rideName;
@@ -13,7 +12,7 @@ public class Ride implements RideInterface {
     private Employee operator; // Employee who operates the ride
     private boolean isOpen;
     private Queue<Visitor> queue; // Queue of visitors waiting for the ride
-    private List<Visitor> history; // History of visitors who have taken the ride
+    private LinkedList<Visitor> history; // History of visitors who have taken the ride
     
     public Ride() {
         this.rideName = "";
@@ -21,7 +20,7 @@ public class Ride implements RideInterface {
         this.operator = null;
         this.isOpen = false;
         this.queue = new LinkedList<>();
-        this.history = new ArrayList<>();
+        this.history = new LinkedList<>();
     }
     
     public Ride(String rideName, int capacity, Employee operator) {
@@ -30,7 +29,7 @@ public class Ride implements RideInterface {
         this.operator = operator;
         this.isOpen = (operator != null); // Ride is open if there's an operator
         this.queue = new LinkedList<>();
-        this.history = new ArrayList<>();
+        this.history = new LinkedList<>();
     }
     
     // Getters and setters
@@ -72,7 +71,7 @@ public class Ride implements RideInterface {
         return queue;
     }
     
-    public List<Visitor> getHistory() {
+    public LinkedList<Visitor> getHistory() {
         return history;
     }
     
@@ -103,7 +102,7 @@ public class Ride implements RideInterface {
             System.out.println("  No visitors in queue");
         } else {
             // Convert queue to list to maintain order for printing
-            List<Visitor> queueList = new ArrayList<>(queue);
+            LinkedList<Visitor> queueList = new LinkedList<>(queue);
             for (int i = 0; i < queueList.size(); i++) {
                 System.out.println("  " + (i + 1) + ". " + queueList.get(i).getName());
             }
@@ -114,20 +113,29 @@ public class Ride implements RideInterface {
     public void addVisitorToHistory(Visitor visitor) {
         if (visitor != null) {
             history.add(visitor);
+            System.out.println("Visitor " + visitor.getName() + " added to history for " + rideName);
+        } else {
+            System.out.println("Failed to add visitor to history: visitor is null");
         }
     }
     
     @Override
     public boolean checkVisitorFromHistory(Visitor visitor) {
         if (visitor == null) {
+            System.out.println("Failed to check visitor in history: visitor is null");
             return false;
         }
-        return history.contains(visitor);
+        
+        boolean found = history.contains(visitor);
+        System.out.println("Visitor " + visitor.getName() + (found ? " is" : " is not") + " in history for " + rideName);
+        return found;
     }
     
     @Override
     public int numberOfVisitors() {
-        return history.size();
+        int count = history.size();
+        System.out.println("Number of visitors in history for " + rideName + ": " + count);
+        return count;
     }
     
     @Override
@@ -136,8 +144,13 @@ public class Ride implements RideInterface {
         if (history.isEmpty()) {
             System.out.println("  No visitors have taken this ride");
         } else {
-            for (int i = 0; i < history.size(); i++) {
-                System.out.println("  " + (i + 1) + ". " + history.get(i).getName());
+            // Using Iterator as required
+            Iterator<Visitor> iterator = history.iterator();
+            int index = 1;
+            while (iterator.hasNext()) {
+                Visitor visitor = iterator.next();
+                System.out.println("  " + index + ". " + visitor.getName());
+                index++;
             }
         }
     }
