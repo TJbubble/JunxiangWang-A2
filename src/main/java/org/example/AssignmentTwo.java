@@ -1,12 +1,9 @@
 package org.example;
 
-import org.example.Employee;
-import org.example.Visitor;
-import org.example.Ride;
+
 
 public class AssignmentTwo {
     public static void main(String[] args) {
-
         
         Employee employee = new Employee("Jane Smith", 25, "456 Oak Ave", "E12345", "Ride Operator", 50000.0);
         System.out.println(employee);
@@ -186,5 +183,21 @@ public class AssignmentTwo {
         System.out.println("Export completed.");
     }
     
-    public void partSeven() {}
+    public void partSeven() {
+        // Create a new Ride object
+        Employee operator = new Employee("Pat Operator", 27, "987 Work Road", "E006", "Ride Operator", 46000.0);
+        Ride ride = new Ride("Ferris Wheel", 20, operator, 6); // Max 6 riders per cycle
+        
+        // Import the file created in the previous part
+        System.out.println("\n--- Importing ride history from file ---");
+        ride.importRideHistory("ride_history.csv");
+        
+        // Print the number of Visitors in the LinkedList to confirm the correct number was imported
+        System.out.println("\n--- Checking number of visitors imported ---");
+        ride.numberOfVisitors();
+        
+        // Print all Visitors in the LinkedList to confirm details were imported correctly
+        System.out.println("\n--- Printing all imported visitors ---");
+        ride.printRideHistory();
+    }
 }

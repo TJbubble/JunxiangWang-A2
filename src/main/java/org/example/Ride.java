@@ -7,6 +7,8 @@ import java.util.Collections;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.BufferedWriter;
+import java.io.BufferedReader;
+import java.io.FileReader;
 import org.example.Visitor;
 import org.example.Employee;
 import org.example.VisitorComparator;
@@ -131,6 +133,45 @@ public class Ride implements RideInterface {
             System.out.println("Ride history exported successfully to " + filename);
         } catch (IOException e) {
             System.err.println("Error exporting ride history to " + filename + ": " + e.getMessage());
+        }
+    }
+    
+    // Method to import ride history from a CSV file
+    public void importRideHistory(String filename) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
+            String line;
+            boolean isFirstLine = true;
+            
+            while ((line = reader.readLine()) != null) {
+                // Skip the header line
+                if (isFirstLine) {
+                    isFirstLine = false;
+                    continue;
+                }
+                
+                // Parse the line
+                String[] parts = line.split(",");
+                if (parts.length == 6) {
+                    String name = parts[0];
+                    int age = Integer.parseInt(parts[1]);
+                    String address = parts[2];
+                    String ticketId = parts[3];
+                    boolean hasSeasonPass = Boolean.parseBoolean(parts[4]);
+                    String membershipLevel = parts[5];
+                    
+                    // Create a new Visitor and add to history
+                    Visitor visitor = new Visitor(name, age, address, ticketId, hasSeasonPass, membershipLevel);
+                    history.add(visitor);
+                } else {
+                    System.err.println("Invalid line format: " + line);
+                }
+            }
+            
+            System.out.println("Ride history imported successfully from " + filename);
+        } catch (IOException e) {
+            System.err.println("Error importing ride history from " + filename + ": " + e.getMessage());
+        } catch (NumberFormatException e) {
+            System.err.println("Error parsing numeric values from file: " + e.getMessage());
         }
     }
     
