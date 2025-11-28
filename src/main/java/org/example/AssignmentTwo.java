@@ -6,20 +6,43 @@ import org.example.Ride;
 
 public class AssignmentTwo {
     public static void main(String[] args) {
-        System.out.println("Assignment Two - Classes and Inheritance");
-        
-        // Create instances of each class to demonstrate functionality
-        // Person person = new Person("John Doe", 30, "123 Main St"); // Cannot instantiate abstract class
-        // System.out.println(person);
-        
+
+        // Demonstrate basic object creation
+        System.out.println("====================================");
         Employee employee = new Employee("Jane Smith", 25, "456 Oak Ave", "E12345", "Ride Operator", 50000.0);
         System.out.println(employee);
         
         Visitor visitor = new Visitor("Bob Johnson", 20, "789 Pine Rd", "V98765", true, "Gold");
         System.out.println(visitor);
         
-        Ride ride = new Ride("Roller Coaster", 24, employee, 5); // Added maxRider parameter
+        Ride ride = new Ride("Roller Coaster", 24, employee, 5);
         System.out.println(ride);
+        
+        // Demonstrate Part 3 - Waiting Line (Queue)
+        System.out.println("\n--- Part 3: Waiting Line (Queue) ---");
+        AssignmentTwo assignment = new AssignmentTwo();
+        assignment.partThree();
+        
+        // Demonstrate Part 4A - Ride History
+        System.out.println("\n--- Part 4A: Ride History ---");
+        assignment.partFourA();
+        
+        // Demonstrate Part 4B - Sorting Ride History
+        System.out.println("\n--- Part 4B: Sorting Ride History ---");
+        assignment.partFourB();
+        
+        // Demonstrate Part 5 - Run Ride Cycle
+        System.out.println("\n--- Part 5: Run Ride Cycle ---");
+        assignment.partFive();
+        
+        // Demonstrate Part 6 - Export to File
+        System.out.println("\n--- Part 6: Export to File ---");
+        assignment.partSix();
+        
+        // Demonstrate Part 7 - Import from File
+        System.out.println("\n--- Part 7: Import from File ---");
+        assignment.partSeven();
+        
     }
     
     public void partThree() {
