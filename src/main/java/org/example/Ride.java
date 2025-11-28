@@ -4,6 +4,9 @@ import java.util.Queue;
 import java.util.LinkedList;
 import java.util.Iterator;
 import java.util.Collections;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.BufferedWriter;
 import org.example.Visitor;
 import org.example.Employee;
 import org.example.VisitorComparator;
@@ -103,6 +106,32 @@ public class Ride implements RideInterface {
     public void sortHistory() {
         Collections.sort(history, new VisitorComparator());
         System.out.println("History sorted for " + rideName);
+    }
+    
+    // Method to export ride history to a CSV file
+    public void exportRideHistory(String filename) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
+            // Write header
+            writer.write("name,age,address,ticketId,hasSeasonPass,membershipLevel");
+            writer.newLine();
+            
+            // Write each visitor's data
+            for (Visitor visitor : history) {
+                writer.write(
+                    visitor.getName() + "," +
+                    visitor.getAge() + "," +
+                    visitor.getAddress() + "," +
+                    visitor.getTicketId() + "," +
+                    visitor.isHasSeasonPass() + "," +
+                    visitor.getMembershipLevel()
+                );
+                writer.newLine();
+            }
+            
+            System.out.println("Ride history exported successfully to " + filename);
+        } catch (IOException e) {
+            System.err.println("Error exporting ride history to " + filename + ": " + e.getMessage());
+        }
     }
     
     // Interface methods implementation

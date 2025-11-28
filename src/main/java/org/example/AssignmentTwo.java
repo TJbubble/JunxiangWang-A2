@@ -6,6 +6,7 @@ import org.example.Ride;
 
 public class AssignmentTwo {
     public static void main(String[] args) {
+
         
         Employee employee = new Employee("Jane Smith", 25, "456 Oak Ave", "E12345", "Ride Operator", 50000.0);
         System.out.println(employee);
@@ -160,7 +161,30 @@ public class AssignmentTwo {
         ride.printRideHistory();
     }
     
-    public void partSix() {}
+    public void partSix() {
+        // Create a new Ride object
+        Employee operator = new Employee("Sue Operator", 31, "654 Work Street", "E005", "Ride Operator", 49000.0);
+        Ride ride = new Ride("Log Flume", 16, operator, 8); // Max 8 riders per cycle
+        
+        // Add a minimum of 5 Visitors to the Ride (i.e., the LinkedList)
+        Visitor visitor1 = new Visitor("Alice", 25, "100 Park Ave", "V001", false, "Standard");
+        Visitor visitor2 = new Visitor("Bob", 30, "200 Park Ave", "V002", true, "Gold");
+        Visitor visitor3 = new Visitor("Charlie", 22, "300 Park Ave", "V003", false, "Silver");
+        Visitor visitor4 = new Visitor("Diana", 28, "400 Park Ave", "V004", true, "Platinum");
+        Visitor visitor5 = new Visitor("Eve", 35, "500 Park Ave", "V005", false, "Standard");
+        
+        System.out.println("\n--- Adding 5 visitors to the ride history ---");
+        ride.addVisitorToHistory(visitor1);
+        ride.addVisitorToHistory(visitor2);
+        ride.addVisitorToHistory(visitor3);
+        ride.addVisitorToHistory(visitor4);
+        ride.addVisitorToHistory(visitor5);
+        
+        // Export the Visitors to a file
+        System.out.println("\n--- Exporting ride history to file ---");
+        ride.exportRideHistory("ride_history.csv");
+        System.out.println("Export completed.");
+    }
     
     public void partSeven() {}
 }
