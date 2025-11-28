@@ -3,8 +3,10 @@ package org.example;
 import java.util.Queue;
 import java.util.LinkedList;
 import java.util.Iterator;
+import java.util.Collections;
 import org.example.Visitor;
 import org.example.Employee;
+import org.example.VisitorComparator;
 
 public class Ride implements RideInterface {
     private String rideName;
@@ -13,6 +15,8 @@ public class Ride implements RideInterface {
     private boolean isOpen;
     private Queue<Visitor> queue; // Queue of visitors waiting for the ride
     private LinkedList<Visitor> history; // History of visitors who have taken the ride
+    private int maxRider; // Maximum number of visitors the ride can take in one cycle
+    private int numOfCycles; // Number of times the ride has been run
     
     public Ride() {
         this.rideName = "";
@@ -21,15 +25,19 @@ public class Ride implements RideInterface {
         this.isOpen = false;
         this.queue = new LinkedList<>();
         this.history = new LinkedList<>();
+        this.maxRider = 1; // At least 1 visitor required
+        this.numOfCycles = 0;
     }
     
-    public Ride(String rideName, int capacity, Employee operator) {
+    public Ride(String rideName, int capacity, Employee operator, int maxRider) {
         this.rideName = rideName;
         this.capacity = capacity;
         this.operator = operator;
         this.isOpen = (operator != null); // Ride is open if there's an operator
         this.queue = new LinkedList<>();
         this.history = new LinkedList<>();
+        this.maxRider = Math.max(1, maxRider); // Ensure at least 1
+        this.numOfCycles = 0;
     }
     
     // Getters and setters
@@ -67,12 +75,34 @@ public class Ride implements RideInterface {
         this.isOpen = open;
     }
     
+    public int getMaxRider() {
+        return maxRider;
+    }
+    
+    public void setMaxRider(int maxRider) {
+        this.maxRider = Math.max(1, maxRider); // Ensure at least 1
+    }
+    
+    public int getNumOfCycles() {
+        return numOfCycles;
+    }
+    
+    public void setNumOfCycles(int numOfCycles) {
+        this.numOfCycles = numOfCycles;
+    }
+    
     public Queue<Visitor> getQueue() {
         return queue;
     }
     
     public LinkedList<Visitor> getHistory() {
         return history;
+    }
+    
+    // Method to sort the history collection
+    public void sortHistory() {
+        Collections.sort(history, new VisitorComparator());
+        System.out.println("History sorted for " + rideName);
     }
     
     // Interface methods implementation
@@ -157,21 +187,36 @@ public class Ride implements RideInterface {
     
     @Override
     public void runOneCycle() {
-        System.out.println("Running one cycle of " + rideName);
-        if (!queue.isEmpty()) {
-            int visitorsToTake = Math.min(queue.size(), capacity);
-            System.out.println("Taking " + visitorsToTake + " visitors on the ride");
-            
-            // Move visitors from queue to history
-            for (int i = 0; i < visitorsToTake; i++) {
-                Visitor visitor = queue.poll(); // FIFO - remove from front of queue
-                if (visitor != null) {
-                    addVisitorToHistory(visitor);
-                }
-            }
-        } else {
-            System.out.println("No visitors in queue to take on the ride");
+        // Check if there is a ride operator
+        if (operator == null) {
+            System.out.println("Cannot run " + rideName + ": No ride operator assigned");
+            return;
         }
+        
+        // Check if there are visitors in the queue
+        if (queue.isEmpty()) {
+            System.out.println("Cannot run " + rideName + ": No visitors in queue");
+            return;
+        }
+        
+        // Run the ride cycle
+        System.out.println("Running cycle #" + (numOfCycles + 1) + " of " + rideName);
+        
+        // Take up to maxRider visitors from the queue
+        int visitorsToTake = Math.min(queue.size(), maxRider);
+        System.out.println("Taking " + visitorsToTake + " visitors on the ride");
+        
+        // Move visitors from queue to history
+        for (int i = 0; i < visitorsToTake; i++) {
+            Visitor visitor = queue.poll(); // FIFO - remove from front of queue
+            if (visitor != null) {
+                addVisitorToHistory(visitor);
+            }
+        }
+        
+        // Increment the cycle counter
+        numOfCycles++;
+        System.out.println("Cycle #" + numOfCycles + " completed for " + rideName);
     }
     
     @Override
@@ -181,6 +226,8 @@ public class Ride implements RideInterface {
                 "capacity=" + capacity + ", " +
                 "operator=" + (operator != null ? operator.getName() : "None") + ", " +
                 "isOpen=" + isOpen + ", " +
+                "maxRider=" + maxRider + ", " +
+                "numOfCycles=" + numOfCycles + ", " +
                 "queueSize=" + queue.size() + ", " +
                 "historySize=" + history.size() + "}";
     }
